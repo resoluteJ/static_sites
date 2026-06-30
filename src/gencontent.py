@@ -10,7 +10,7 @@ def extract_title(md: str) -> str:
     raise ValueError("no title found")   
 
 
-def generate_pages_recursive(source_dir_path,dest_dir_path,template_path):
+def generate_pages_recursive(source_dir_path,dest_dir_path,template_path,basepath):
 #generate all plages in source directory to destination directory using template
     if not os.path.exists(dest_dir_path):
         os.mkdir(dest_dir_path)
@@ -24,14 +24,14 @@ def generate_pages_recursive(source_dir_path,dest_dir_path,template_path):
             if from_path.endswith(".md"):
                 html_filename = dest_path.replace(".md",".html") 
                 print(f"generating page (from: {from_path}, template:{template_path},dest: {dest_path})")
-                generate_page(from_path,template_path,html_filename)
+                generate_page(from_path,template_path,html_filename,basepath)
             else:
                 print(f"not coyping {filename} from {from_path} as it's not at markdown file")
         else:
-            generate_pages_recursive(from_path, dest_path,template_path)
+            generate_pages_recursive(from_path, dest_path,template_path,basepath)
 
 
-def generate_page(from_path, template_path, dest_path):
+def generate_page(from_path, template_path, dest_path,basepath):
     print(f"Generating page from {from_path} to {dest_path} using {template_path}\n")
     
     with open(from_path,"r") as f:
@@ -45,8 +45,8 @@ def generate_page(from_path, template_path, dest_path):
 
     new_template = extracted_template.replace("<title>{{ Title }}</title>",f"<title>{title}</title>",1)
     new_template = new_template.replace("<article>{{ Content }}</article>",f"<article>{html_string}</article>",1)
-    
-    
+    new_template = new_template.replace('href="/',f'href="{basepath}')
+    new_template = new_template.replace('src="/',f'src="{basepath}')
 
     dest_dir_path = os.path.dirname(dest_path)
     if dest_dir_path != "":
