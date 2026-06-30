@@ -6,12 +6,15 @@ from gencontent import generate_pages_recursive
 
 dir_path_static = "./static"
 dir_path_public = "./docs"
+dir_path_content = "./content"
+template_path = "./template.html"
+default_basepath = "/"
 
 
 
 def main():
 
-    basepath = sys.argv[0] if sys.argv != '' else "/"
+    basepath = sys.argv[1] if len(sys.argv) > 1 else default_basepath
 
     print("Deleting public directory...")
     if os.path.exists(dir_path_public):
@@ -25,7 +28,7 @@ def main():
     
     
 
-    generate_pages_recursive("content",dir_path_public,"template.html",basepath)
+    generate_pages_recursive(dir_path_content,dir_path_public,"template.html",basepath)
     
 
 
